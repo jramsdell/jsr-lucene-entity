@@ -16,17 +16,26 @@ fun getStuff(filename: String, databaseName: String) {
     val clean = {string: String -> string.toLowerCase().replace(" ", "_")}
 
     DeserializeData.iterableAnnotations(f)
-        .asSequence()
-        .map { page ->
+        .forEachParallel { page ->
             page.flatSectionPathsParagraphs()
                 .flatMap { psection ->
-                                psection.
-                                    paragraph
-                                    .bodies.filterIsInstance<Data.ParaLink>()
-                                    .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page)}
-                         }
-            }
-        .forEach(kotIndexer::addLinks)
+                    psection.
+                        paragraph
+                        .bodies.filterIsInstance<Data.ParaLink>()
+                        .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page) } }
+                .apply(kotIndexer::addLinks)
+        }
+//        .asSequence()
+//        .map { page ->
+//            page.flatSectionPathsParagraphs()
+//                .flatMap { psection ->
+//                                psection.
+//                                    paragraph
+//                                    .bodies.filterIsInstance<Data.ParaLink>()
+//                                    .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page)}
+//                         }
+//            }
+//        .forEach(kotIndexer::addLinks)
 
 //        .forEach { p ->
 //            p.bodies.filterIsInstance<Data.ParaLink>()
