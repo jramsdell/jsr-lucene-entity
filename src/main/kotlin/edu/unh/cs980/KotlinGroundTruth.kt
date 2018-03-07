@@ -31,6 +31,8 @@ class KotlinGroundTruth(filename: String) {
         paragraphs.entries
             .pmap { (pid, paragraph) ->
                 val entityMentions = f(paragraph.text).toHashSet()
+                println("Entity Mentions: $entityMentions")
+                println("Ground Truth: ${paragraph.entities}")
                 val correctlyLinked = paragraph.entities.intersect(entityMentions).size
                 val recall = correctlyLinked / paragraph.entities.size.toDouble()
                 val precision = correctlyLinked / entityMentions.size.toDouble()
