@@ -12,14 +12,13 @@ fun getStuff(filename: String) {
         .take(1)
         .flatMap { page ->
             page.flatSectionPathsParagraphs()
-                .asSequence()
                 .flatMap { psection ->
                                 psection.
                                     paragraph
                                     .bodies.filterIsInstance<Data.ParaLink>()
                                     .map { paraLink -> paraLink.anchorText to paraLink.page}
-                                    .asSequence()
                          }
+                .asSequence()
             }
         .take(1)
         .forEach { p -> println(p)
