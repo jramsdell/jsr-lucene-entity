@@ -28,10 +28,17 @@ public class Main {
         Subparser indexParser = subparsers.addParser("index")
                 .setDefault("func", new Exec(Main::buildCorpusIndex)).help("Indexes paragraph corpus using Lucene.");
         indexParser.addArgument("corpus").required(true).help("Location to paragraph corpus file (.cbor)");
-        indexParser.addArgument("--db_name").setDefault("")
+        indexParser.addArgument("--db_name").setDefault("hyperlink.db")
                 .help("Directory name to create for Lucene index (default: stuff)");
         indexParser.addArgument("--out").setDefault("stuff")
                 .help("Directory name to create for Lucene index (default: stuff)");
+
+        Subparser evaluatorParser = subparsers.addParser("evaluator")
+                .setDefault("func", new Exec(Main::evaluate))
+                .help("Evaluates F1-measure for entity linkers.");
+        indexParser.addArgument("corpus")
+                .required(true)
+                .help("Location of .cbor file for ground truth (should be lead-paragraphs.cbor");
 
 
 //		// Ranklib Trainer
@@ -58,11 +65,15 @@ public class Main {
     }
 
     private static void buildCorpusIndex(Namespace params) {
-        String indexLocation = params.getString("out");
         String corpusFile = params.getString("corpus");
-        String spotlight_location = params.getString("spotlight_folder");
         String db = params.getString("db_name");
-        KotCborParser.getStuff(corpusFile, "mydb.db");
+        KotHyperlinkIndexer.indexHyperlinks(corpusFile, db);
+    }
+
+    private static void evaluate(Namespace params) {
+        String corpusFile = params.getString("corpus");
+        KotlinGroundTruth evaluator = new KotlinGroundTruth(corpusFile);
+        evaluator.evaluateGroundTruths();
     }
 
 
