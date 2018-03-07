@@ -7,7 +7,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import java.io.File
-
+import java.util.concurrent.atomic.AtomicInteger
 
 
 fun getStuff(filename: String, databaseName: String) {
@@ -15,8 +15,10 @@ fun getStuff(filename: String, databaseName: String) {
     val f = File(filename).inputStream()
     val clean = {string: String -> string.toLowerCase().replace(" ", "_")}
 
+    val counter = AtomicInteger()
     DeserializeData.iterableAnnotations(f)
         .forEachParallel { page ->
+            println(counter.incrementAndGet())
             page.flatSectionPathsParagraphs()
                 .flatMap { psection ->
                     psection.
