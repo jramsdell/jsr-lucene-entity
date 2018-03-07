@@ -28,6 +28,8 @@ public class Main {
         Subparser indexParser = subparsers.addParser("index")
                 .setDefault("func", new Exec(Main::buildCorpusIndex)).help("Indexes paragraph corpus using Lucene.");
         indexParser.addArgument("corpus").required(true).help("Location to paragraph corpus file (.cbor)");
+        indexParser.addArgument("--db_name").setDefault("")
+                .help("Directory name to create for Lucene index (default: stuff)");
         indexParser.addArgument("--out").setDefault("stuff")
                 .help("Directory name to create for Lucene index (default: stuff)");
 
@@ -59,7 +61,8 @@ public class Main {
         String indexLocation = params.getString("out");
         String corpusFile = params.getString("corpus");
         String spotlight_location = params.getString("spotlight_folder");
-        KotCborParser.getStuff(corpusFile);
+        String db = params.getString("db_name");
+        KotCborParser.getStuff(corpusFile, db);
     }
 
 

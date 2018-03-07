@@ -3,16 +3,24 @@ package edu.unh.cs980
 
 import edu.unh.cs.treccar_v2.Data
 import edu.unh.cs.treccar_v2.read_data.DeserializeData
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.runBlocking
 import java.io.File
 
+fun <A>Sequence<A>.forEachParallel(f: suspend (A) -> Unit): Unit = runBlocking {
+    map { async(CommonPool) { f(it) } }.forEach { it.await() }
+}
 
-fun getStuff(filename: String) {
+
+fun getStuff(filename: String, databaseName: String) {
+    val kotIndexer = HyperlinkIndexer(databaseName)
     val f = File(filename).inputStream()
     val clean = {string: String -> string.toLowerCase().replace(" ", "_")}
 
     DeserializeData.iterableAnnotations(f)
         .asSequence()
-        .take(1)
+        .take(10000)
         .flatMap { page ->
             page.flatSectionPathsParagraphs()
                 .flatMap { psection ->
@@ -23,10 +31,9 @@ fun getStuff(filename: String) {
                          }
                 .asSequence()
             }
-        .take(100)
-        .forEach { p -> println(p)
+        .chunked(1000)
+        .forEachParallel { links -> kotIndexer.addLinks(links) }
 
-        }
 //        .forEach { p ->
 //            p.bodies.filterIsInstance<Data.ParaLink>()
 //                .map { paraLink -> paraLink.anchorText to paraLink.page}
