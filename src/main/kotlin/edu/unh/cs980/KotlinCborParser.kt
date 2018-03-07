@@ -14,6 +14,7 @@ fun getStuff(filename: String) {
                                 .map { paraLink -> paraLink.anchorText to paraLink.page}
                                 .asSequence()
                     }
+        .take(1)
         .forEach { println(it) }
 //        .forEach { p ->
 //            p.bodies.filterIsInstance<Data.ParaLink>()
