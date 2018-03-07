@@ -7,18 +7,32 @@ import java.io.File
 
 fun getStuff(filename: String) {
     val f = File(filename).inputStream()
-    DeserializeData.iterableParagraphs(f)
-        .asSequence<Data.Paragraph>()
-        .flatMap    {  page ->
-                            page.bodies.filterIsInstance<Data.ParaLink>()
-                                .map { paraLink -> paraLink.anchorText to paraLink.page}
-                                .asSequence()
-                    }
+    DeserializeData.iterableAnnotations(f)
+        .asSequence()
         .take(1)
-        .forEach { println(it) }
+        .flatMap { page ->
+            page.flatSectionPathsParagraphs()
+                .asSequence()
+                .flatMap { psection ->
+                                psection.
+                                    paragraph
+                                    .bodies.filterIsInstance<Data.ParaLink>()
+                                    .map { paraLink -> paraLink.anchorText to paraLink.page}
+                                    .asSequence()
+                         }
+            }
+        .take(1)
+        .forEach { p -> println(p)
+
+        }
 //        .forEach { p ->
 //            p.bodies.filterIsInstance<Data.ParaLink>()
 //                .map { paraLink -> paraLink.anchorText to paraLink.page}
+//        }
+//        .flatMap    {  page ->
+//            page.bodies.filterIsInstance<Data.ParaLink>()
+//                .map { paraLink -> paraLink.anchorText to paraLink.page}
+//                .asSequence()
 //        }
 }
 
