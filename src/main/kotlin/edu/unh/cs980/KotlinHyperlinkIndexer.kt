@@ -17,8 +17,14 @@ class HyperlinkIndexer(filename: String) {
         .valueSerializer(Serializer.INTEGER)
         .createOrOpen()
 
-    fun addLink(anchorText: String, entity: String) =
-            map.compute(arrayOf(anchorText, entity), { key, value -> value?.inc() ?: 1  })
+    val mentionSet = db.hashSet("mentions")
+        .serializer(Serializer.STRING)
+        .createOrOpen()
+
+    fun addLink(anchorText: String, entity: String) {
+        map.compute(arrayOf(anchorText, entity), { key, value -> value?.inc() ?: 1 })
+        mentionSet += anchorText
+    }
 
     fun addLinks(links: List<Pair<String, String>> ) =
             links.forEach { (anchorText, entity) -> addLink(anchorText, entity) }
@@ -39,6 +45,8 @@ class HyperlinkIndexer(filename: String) {
                             (mostPopularEntity.key[1] as String) to mostPopularEntity.value / total.toDouble()
                         }
                 }
+
+    fun hasEntityMention(mention: String) = mention in mentionSet
 }
 
 fun main(args: Array<String>) {
