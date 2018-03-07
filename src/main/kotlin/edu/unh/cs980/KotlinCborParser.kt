@@ -21,7 +21,7 @@ fun getStuff(filename: String, databaseName: String) {
     DeserializeData.iterableAnnotations(f)
         .asSequence()
         .take(10000)
-        .flatMap { page ->
+        .map { page ->
             page.flatSectionPathsParagraphs()
                 .flatMap { psection ->
                                 psection.
@@ -29,10 +29,8 @@ fun getStuff(filename: String, databaseName: String) {
                                     .bodies.filterIsInstance<Data.ParaLink>()
                                     .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page)}
                          }
-                .asSequence()
             }
-        .chunked(1000)
-        .forEachParallel { links -> kotIndexer.addLinks(links) }
+        .forEachParallel { kotIndexer.addLinks(it)}
 
 //        .forEach { p ->
 //            p.bodies.filterIsInstance<Data.ParaLink>()
