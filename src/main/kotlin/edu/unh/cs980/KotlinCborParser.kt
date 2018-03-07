@@ -8,9 +8,6 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import java.io.File
 
-fun <A>Sequence<A>.forEachParallel(f: suspend (A) -> Unit): Unit = runBlocking {
-    map { async(CommonPool) { f(it) } }.forEach { it.await() }
-}
 
 
 fun getStuff(filename: String, databaseName: String) {
@@ -20,7 +17,6 @@ fun getStuff(filename: String, databaseName: String) {
 
     DeserializeData.iterableAnnotations(f)
         .asSequence()
-        .take(10000)
         .map { page ->
             page.flatSectionPathsParagraphs()
                 .flatMap { psection ->
@@ -30,7 +26,7 @@ fun getStuff(filename: String, databaseName: String) {
                                     .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page)}
                          }
             }
-        .forEachParallel { kotIndexer.addLinks(it)}
+        .forEach(kotIndexer::addLinks)
 
 //        .forEach { p ->
 //            p.bodies.filterIsInstance<Data.ParaLink>()
