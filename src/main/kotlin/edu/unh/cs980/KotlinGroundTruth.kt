@@ -37,6 +37,7 @@ class KotlinGroundTruth(filename: String) {
 
                 // return F1-mesure
                 (2 * precision * recall) / (precision + recall) }
+            .map { if (it.isFinite()) it else 0.0 }
             .average()
 
     fun getPrecision(entityMentions: HashSet<String>, groundTruthEntities: HashSet<String>): Double {

@@ -74,10 +74,8 @@ fun indexHyperlinks(filename: String, databaseName: String) {
             // Extract all of the anchors/entities and add them to database
             page.flatSectionPathsParagraphs()
                 .flatMap { psection ->
-                    psection.getParagraph()
-                    psection.
-                        paragraph
-                        .bodies.filterIsInstance<Data.ParaLink>()
+                    psection.paragraph.bodies
+                        .filterIsInstance<Data.ParaLink>()
                         .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page) } }
                 .apply(kotIndexer::addLinks)
         }
