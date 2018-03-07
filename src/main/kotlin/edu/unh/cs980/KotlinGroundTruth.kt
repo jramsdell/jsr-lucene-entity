@@ -6,6 +6,7 @@ import edu.unh.cs.treccar_v2.read_data.DeserializeData
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
+import retrieveSpotlightEntities
 import retrieveTagMeEntities
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
@@ -31,8 +32,6 @@ class KotlinGroundTruth(filename: String) {
         paragraphs.entries
             .pmap { (pid, paragraph) ->
                 val entityMentions = f(paragraph.text).map(clean).toHashSet()
-                println("Entity Mentions: $entityMentions")
-                println("Ground Truth: ${paragraph.entities}")
                 val correctlyLinked = paragraph.entities.intersect(entityMentions).size
                 val recall = correctlyLinked / paragraph.entities.size.toDouble()
                 val precision = correctlyLinked / entityMentions.size.toDouble()
@@ -55,6 +54,8 @@ class KotlinGroundTruth(filename: String) {
     fun evaluateGroundTruths() {
         val tagMeResult = evaluateLinker(::retrieveTagMeEntities)
         println("TagMe: $tagMeResult")
+        val dbPediaResult = evaluateLinker(::retrieveSpotlightEntities)
+        println("DBPedia: $dbPediaResult")
 
     }
 }
