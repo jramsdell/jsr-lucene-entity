@@ -6,7 +6,7 @@ import edu.unh.cs.treccar_v2.read_data.DeserializeData
 import java.io.File
 
 fun getStuff(filename: String) {
-    val f = File("wee").inputStream()
+    val f = File(filename).inputStream()
     DeserializeData.iterableParagraphs(f)
         .asSequence<Data.Paragraph>()
         .flatMap    {  page ->
