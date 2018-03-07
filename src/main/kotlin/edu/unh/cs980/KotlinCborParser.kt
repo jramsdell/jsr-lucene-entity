@@ -16,7 +16,8 @@ fun getStuff(filename: String, databaseName: String) {
     val clean = {string: String -> string.toLowerCase().replace(" ", "_")}
 
     DeserializeData.iterableAnnotations(f)
-        .forEachParallel { page ->
+        .chunked(1000)
+        .forEachParallel { chunk -> chunk.forEach { page ->
             page.flatSectionPathsParagraphs()
                 .flatMap { psection ->
                     psection.
@@ -24,7 +25,7 @@ fun getStuff(filename: String, databaseName: String) {
                         .bodies.filterIsInstance<Data.ParaLink>()
                         .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page) } }
                 .apply(kotIndexer::addLinks)
-        }
+        }}
 //        .asSequence()
 //        .map { page ->
 //            page.flatSectionPathsParagraphs()
