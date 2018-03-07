@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 fun getStuff(filename: String, databaseName: String) {
     val kotIndexer = HyperlinkIndexer(databaseName)
-    val f = File(filename).inputStream().buffered()
+    val f = File(filename).inputStream().buffered(8000000)
     val clean = {string: String -> string.toLowerCase().replace(" ", "_")}
 
     DeserializeData.iterableAnnotations(f)
