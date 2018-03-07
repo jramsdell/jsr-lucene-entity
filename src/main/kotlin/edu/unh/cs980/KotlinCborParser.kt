@@ -12,11 +12,12 @@ import java.util.concurrent.atomic.AtomicInteger
 
 fun getStuff(filename: String, databaseName: String) {
     val kotIndexer = HyperlinkIndexer(databaseName)
-    val f = File(filename).inputStream().buffered(100000)
+    val f = File(filename).inputStream().buffered(800000)
     val clean = {string: String -> string.toLowerCase().replace(" ", "_")}
 
     DeserializeData.iterableAnnotations(f)
-        .forEachParallel { page ->
+        .chunked(100)
+        .forEachParallel { chunk -> chunk.forEach { page ->
             page.flatSectionPathsParagraphs()
                 .flatMap { psection ->
                     psection.
@@ -24,7 +25,7 @@ fun getStuff(filename: String, databaseName: String) {
                         .bodies.filterIsInstance<Data.ParaLink>()
                         .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page) } }
                 .apply(kotIndexer::addLinks)
-        }
+        }}
 //        .asSequence()
 //        .map { page ->
 //            page.flatSectionPathsParagraphs()
