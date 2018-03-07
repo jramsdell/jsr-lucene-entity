@@ -30,7 +30,7 @@ class KotlinGroundTruth(filename: String) {
     fun evaluateLinker(f: (String) -> List<String>): Double =
         paragraphs.entries
             .pmap { (pid, paragraph) ->
-                val entityMentions = f(paragraph.text).toHashSet()
+                val entityMentions = f(paragraph.text).map(clean).toHashSet()
                 println("Entity Mentions: $entityMentions")
                 println("Ground Truth: ${paragraph.entities}")
                 val correctlyLinked = paragraph.entities.intersect(entityMentions).size
