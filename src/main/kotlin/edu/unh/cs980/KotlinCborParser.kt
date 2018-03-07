@@ -14,19 +14,16 @@ fun getStuff(filename: String, databaseName: String) {
     val kotIndexer = HyperlinkIndexer(databaseName)
     val f = File(filename).inputStream().buffered(100000)
     val clean = {string: String -> string.toLowerCase().replace(" ", "_")}
-//    DeserializeData.iterableAnnotations(f)
 
-    val counter = AtomicInteger()
     DeserializeData.iterableAnnotations(f)
         .forEachParallel { page ->
-            println(counter.incrementAndGet())
             page.flatSectionPathsParagraphs()
                 .flatMap { psection ->
                     psection.
                         paragraph
                         .bodies.filterIsInstance<Data.ParaLink>()
                         .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page) } }
-//                .apply(kotIndexer::addLinks)
+                .apply(kotIndexer::addLinks)
         }
 //        .asSequence()
 //        .map { page ->
