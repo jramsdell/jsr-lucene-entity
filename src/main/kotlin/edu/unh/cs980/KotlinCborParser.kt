@@ -20,7 +20,7 @@ fun getStuff(filename: String) {
                          }
                 .asSequence()
             }
-        .take(1)
+        .take(100)
         .forEach { p -> println(p)
 
         }
