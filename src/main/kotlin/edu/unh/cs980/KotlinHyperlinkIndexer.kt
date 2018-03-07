@@ -7,7 +7,9 @@ import org.mapdb.serializer.SerializerArrayTuple
 class HyperlinkIndexer(filename: String) {
     val db = DBMaker
         .fileDB(filename)
+        .fileMmapEnable()
         .closeOnJvmShutdown()
+        .concurrencyScale(60)
         .make()
 
     val map = db.treeMap("links")
