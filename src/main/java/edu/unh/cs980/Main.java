@@ -36,7 +36,7 @@ public class Main {
         Subparser evaluatorParser = subparsers.addParser("evaluator")
                 .setDefault("func", new Exec(Main::evaluate))
                 .help("Evaluates F1-measure for entity linkers.");
-        indexParser.addArgument("corpus")
+        evaluatorParser.addArgument("corpus")
                 .required(true)
                 .help("Location of .cbor file for ground truth (should be lead-paragraphs.cbor");
 
