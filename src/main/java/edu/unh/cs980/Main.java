@@ -62,7 +62,7 @@ public class Main {
         String corpusFile = params.getString("corpus");
         String spotlight_location = params.getString("spotlight_folder");
         String db = params.getString("db_name");
-        KotCborParser.getStuff(corpusFile, db);
+        KotCborParser.getStuff(corpusFile, "mydb.db");
     }
 
 
