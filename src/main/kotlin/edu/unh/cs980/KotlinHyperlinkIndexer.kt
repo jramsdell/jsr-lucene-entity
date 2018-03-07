@@ -19,7 +19,7 @@ class HyperlinkIndexer(filename: String) {
             map.compute(arrayOf(anchorText, entity), { key, value -> value?.inc() ?: 1  })
 
     fun addLinks(links: List<Pair<String, String>> ) =
-            links.forEachParallel { (anchorText, entity) -> addLink(anchorText, entity) }
+            links.forEach { (anchorText, entity) -> addLink(anchorText, entity) }
 
     fun getLink(anchorText: String, entity: String): Int =
             map.get(arrayOf(anchorText, entity)) ?: 0
