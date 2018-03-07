@@ -1,11 +1,8 @@
 package edu.unh.cs980
 
-import org.mapdb.BTreeMap
-import org.mapdb.DB
 import org.mapdb.DBMaker
 import org.mapdb.Serializer
 import org.mapdb.serializer.SerializerArrayTuple
-import sun.awt.SunHints.Value
 
 class HyperlinkIndexer(filename: String) {
     val db = DBMaker
