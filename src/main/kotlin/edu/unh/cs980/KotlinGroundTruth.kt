@@ -37,10 +37,18 @@ class KotlinGroundTruth(filename: String) {
                 val recall = correctlyLinked / paragraph.entities.size.toDouble()
                 val precision = correctlyLinked / entityMentions.size.toDouble()
 
-                // return F1-mesure
-                (2 * precision * recall) / (precision + recall) }
-            .map { if (it.isFinite()) it else 0.0 }
-            .average()
+//                 return F1-measure
+//                (2 * precision * recall) / (precision + recall) }
+                Triple(correctlyLinked, entityMentions.size, paragraph.entities.size) }
+            .reduce { acc, triple ->  Triple(
+                    acc.first + triple.first, acc.second + triple.second, acc.third + triple.third)}
+            .let { (correctlyLinked, entityMentions, shouldBeMentioned) ->
+                val recall = correctlyLinked / shouldBeMentioned.toDouble()
+                val precision = correctlyLinked / entityMentions.toDouble()
+                (2 * precision * recall) / (precision + recall)
+            }
+//            .map { if (it.isFinite()) it else 0.0 }
+//            .average()
 
 
     fun evaluateGroundTruths() {
@@ -52,7 +60,7 @@ class KotlinGroundTruth(filename: String) {
         (0 .. 10).forEach {
             popLinker.minPop = it * 0.1
             val popLinkerResult = evaluateLinker(popLinker::annotateByPopularity)
-            println("Popularity Linker(${it * 0.1}: $popLinkerResult")
+            println("Popularity Linker(${it * 0.1}): $popLinkerResult")
         }
 
     }
