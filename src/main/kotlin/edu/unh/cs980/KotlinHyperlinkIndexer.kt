@@ -113,6 +113,7 @@ class HyperlinkIndexer(filename: String) {
         val chunker = ExactDictionaryChunker(dict, tokenFactory, false, false)
         chunker.chunk(text).chunkSet().forEach {  chunk ->
             println(text.substring(chunk.start(), chunk.end()))
+            println(chunk.score())
         }
         return emptyList()
     }
