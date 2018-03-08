@@ -30,6 +30,7 @@ class KotlinGroundTruth(filename: String) {
 
     fun evaluateLinker(f: (String) -> List<String>): Double =
         paragraphs.entries
+            .filter { it.value.entities.isNotEmpty() }
             .pmap { (pid, paragraph) ->
                 val entityMentions = f(paragraph.text).map(clean).toHashSet()
                 val correctlyLinked = paragraph.entities.intersect(entityMentions).size
@@ -48,8 +49,11 @@ class KotlinGroundTruth(filename: String) {
         val dbPediaResult = evaluateLinker(::retrieveSpotlightEntities)
         println("DBPedia: $dbPediaResult")
         val popLinker = PopularityLinker("mydb.db", "hyperlink_dict.txt", 0.3)
-        val popLinkerResult = evaluateLinker(popLinker::annotateByPopularity)
-        println("Popularity Linker: $popLinkerResult")
+        (0 .. 10).forEach {
+            popLinker.minPop = it * 0.1
+            val popLinkerResult = evaluateLinker(popLinker::annotateByPopularity)
+            println("Popularity Linker(${it * 0.1}: $popLinkerResult")
+        }
 
     }
 }

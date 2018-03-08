@@ -12,7 +12,7 @@ import com.aliasi.tokenizer.TokenLengthTokenizerFactory
 import com.aliasi.util.AbstractExternalizable
 import java.io.*
 
-class PopularityLinker(databaseLoc: String, dictLoc: String, val minPop: Double = 0.0) {
+class PopularityLinker(databaseLoc: String, dictLoc: String, var minPop: Double = 0.0) {
     val hyperIndexer = HyperlinkIndexer(databaseLoc)
     val chunker = getChunker(dictLoc)
 
