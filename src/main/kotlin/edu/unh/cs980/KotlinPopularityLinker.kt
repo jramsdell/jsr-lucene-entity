@@ -3,6 +3,7 @@ package edu.unh.cs980
 
 import com.aliasi.dict.DictionaryEntry
 import com.aliasi.dict.ExactDictionaryChunker
+import com.aliasi.dict.ApproxDictionaryChunker
 import com.aliasi.dict.MapDictionary
 import com.aliasi.test.unit.tokenizer.TokenLengthTokenizerFactoryTest
 import com.aliasi.tokenizer.EnglishStopTokenizerFactory
@@ -11,7 +12,7 @@ import com.aliasi.tokenizer.TokenLengthTokenizerFactory
 import com.aliasi.util.AbstractExternalizable
 import java.io.*
 
-class PopularityLinker(databaseLoc: String, dictLoc: String) {
+class PopularityLinker(databaseLoc: String, dictLoc: String, val minPop: Double = 0.0) {
     val hyperIndexer = HyperlinkIndexer(databaseLoc)
     val chunker = getChunker(dictLoc)
 
@@ -49,12 +50,14 @@ class PopularityLinker(databaseLoc: String, dictLoc: String) {
         return ExactDictionaryChunker(dict, factory, false, false)
     }
 
-    fun annotateByPopularity(text: String): List<String> {
-        chunker.chunk(text).chunkSet().forEach {  chunk ->
-            println(text.substring(chunk.start(), chunk.end()))
-            println(chunk.score())
-        }
-        return emptyList()
-    }
+    fun annotateByPopularity(text: String): List<String> =
+            chunker
+                .chunk(text)
+                .chunkSet()
+                .map {  chunk -> text.substring(chunk.start(), chunk.end()) }
+                .filter(hyperIndexer::hasEntityMention)
+                .map(hyperIndexer::getPopular)
+                .filter { (token, popularity) ->  popularity > minPop}
+                .map { (token, popularity) -> token }
 }
 

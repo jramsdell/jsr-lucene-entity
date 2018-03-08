@@ -44,6 +44,9 @@ public class Main {
                 .setDefault("func", new Exec(Main::popularityLinker));
         popularityLinker.addArgument("db")
                 .help("Directory name to create for Lucene index (default: stuff)");
+        popularityLinker.addArgument("--min_pop")
+                .setDefault(0.0)
+                .help("Minimum popularity filter");
         popularityLinker.addArgument("--dict")
                 .setDefault("hyperlink_dict.txt")
                 .help("Location of dictionary");
@@ -88,7 +91,8 @@ public class Main {
     private static void popularityLinker(Namespace params) {
         String db = params.getString("db");
         String dictLoc = params.getString("dict");
-        PopularityLinker popularityLinker = new PopularityLinker(db, dictLoc);
+        Double minPop = params.getDouble("min_pop");
+        PopularityLinker popularityLinker = new PopularityLinker(db, dictLoc, minPop);
         popularityLinker
                 .annotateByPopularity("Bill Gates was a person who did stuff. Experience the power of linking stuff.");
     }
