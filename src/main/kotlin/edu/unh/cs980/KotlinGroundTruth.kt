@@ -41,15 +41,6 @@ class KotlinGroundTruth(filename: String) {
             .map { if (it.isFinite()) it else 0.0 }
             .average()
 
-    fun getPrecision(entityMentions: HashSet<String>, groundTruthEntities: HashSet<String>): Double {
-        val correctlyLinked = groundTruthEntities.intersect(entityMentions).size
-        return correctlyLinked / groundTruthEntities.size.toDouble()
-    }
-
-    fun getRecall(entityMentions: HashSet<String>, groundTruthEntities: HashSet<String>): Double {
-        val correctlyLinked = groundTruthEntities.intersect(entityMentions).size
-        return correctlyLinked / groundTruthEntities.size.toDouble()
-    }
 
     fun evaluateGroundTruths() {
         val tagMeResult = evaluateLinker(::retrieveTagMeEntities)

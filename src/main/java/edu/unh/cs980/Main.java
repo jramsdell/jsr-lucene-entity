@@ -40,6 +40,12 @@ public class Main {
                 .required(true)
                 .help("Location of .cbor file for ground truth (should be lead-paragraphs.cbor");
 
+        Subparser popularityLinker = subparsers.addParser("popularity_linker")
+                .setDefault("func", new Exec(Main::popularityLinker))
+                .help("Evaluates F1-measure for entity linkers.");
+        popularityLinker.addArgument("--db_name").setDefault("hyperlink.db")
+                .help("Directory name to create for Lucene index (default: stuff)");
+
 
 //		// Ranklib Trainer
 //		Subparser ranklibTrainerParser = subparsers.addParser("ranklib_trainer")
@@ -67,13 +73,20 @@ public class Main {
     private static void buildCorpusIndex(Namespace params) {
         String corpusFile = params.getString("corpus");
         String db = params.getString("db_name");
-        KotHyperlinkIndexer.indexHyperlinks(corpusFile, db);
+        HyperlinkIndexer indexer = new HyperlinkIndexer(db);
+        indexer.indexHyperlinks(corpusFile);
     }
 
     private static void evaluate(Namespace params) {
         String corpusFile = params.getString("corpus");
         KotlinGroundTruth evaluator = new KotlinGroundTruth(corpusFile);
         evaluator.evaluateGroundTruths();
+    }
+
+    private static void popularityLinker(Namespace params) {
+        String db = params.getString("db_name");
+        HyperlinkIndexer indexer = new HyperlinkIndexer(db);
+        indexer.annotateByPopularity("Bill Gates was a person who did stuff. Experience the power of linking stuff.");
     }
 
 
