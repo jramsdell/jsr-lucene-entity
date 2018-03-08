@@ -41,8 +41,9 @@ class PopularityLinker(databaseLoc: String, dictLoc: String, val minPop: Double 
     }
 
     fun getChunker(dictLoc: String): ExactDictionaryChunker {
-        val dict =  if (!File(dictLoc).exists()) createDictionary().apply { saveDictionary(dictLoc, this) }
-                    else loadDictionary(dictLoc)
+//        val dict =  if (!File(dictLoc).exists()) createDictionary().apply { saveDictionary(dictLoc, this) }
+//                    else loadDictionary(dictLoc)
+        val dict = createDictionary()
 
         val factory = IndoEuropeanTokenizerFactory()
             .run(::EnglishStopTokenizerFactory)
