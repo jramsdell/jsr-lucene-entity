@@ -21,7 +21,7 @@ This is responsible for parsing the very large allButBenchmark corpus. It extrac
 ```bash
 /trec_data/unprocessedAllButBenchmark/unprocessedAllButBenchmark.cbor
 ```
-
+#### Usage
 ```bash
 program.jar index corpus [--spotlight_folder ""] [--out "index"]
 ```
@@ -42,7 +42,7 @@ To make your life easier, the database file (hyperlink.db) and the ground set pa
 /trec_data/jordan/hyperlink.db
 /trec_data/lead-paragraphs.cbor
 ```
-
+#### Usage
 ```bash
 program.jar evaluator corpus [--db ""]
 ```
