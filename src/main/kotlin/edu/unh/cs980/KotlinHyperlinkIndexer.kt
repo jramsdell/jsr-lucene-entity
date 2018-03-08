@@ -70,7 +70,7 @@ class HyperlinkIndexer(filename: String) {
 
     fun indexHyperlinks(filename: String) {
         val f = File(filename).inputStream().buffered(16 * 1024)
-        val clean = {string: String -> string.toLowerCase().replace(" ", "_")}
+//        val clean = {string: String -> string.toLowerCase().replace(" ", "_")}
         val counter = AtomicInteger()
 
         DeserializeData.iterableAnnotations(f)
@@ -88,16 +88,17 @@ class HyperlinkIndexer(filename: String) {
                     .flatMap { psection ->
                         psection.paragraph.bodies
                             .filterIsInstance<Data.ParaLink>()
-                            .map { paraLink -> clean(paraLink.anchorText) to clean(paraLink.page) } }
+                            .map { paraLink -> paraLink.anchorText.toLowerCase() to paraLink.page.toLowerCase() } }
                     .apply(this::addLinks)
             }
     }
 
     fun addDictionaryEntries() {
-        mentionSet.forEach { mention ->
-            mention.replace("_", " ")
-                .apply { dict.addEntry(DictionaryEntry<String>(this, "")) }
-        }
+//        mentionSet.pmap { mention -> mention.replace()}
+//        mentionSet.forEach { mention ->
+//            mention.replace("_", " ")
+//                .apply { dict.addEntry(DictionaryEntry<String>(this, "")) }
+//        }
     }
 
     fun annotateByPopularity(text: String): List<String> {
@@ -105,7 +106,7 @@ class HyperlinkIndexer(filename: String) {
             addDictionaryEntries()
         }
 
-        val tokenFactory = IndoEuropeanTokenizerFactory()
+        val tokenFactory = IndoEuropeanTokenizerFactory().run(::EnglishStopTokenizerFactory)
         val chunker = ExactDictionaryChunker(dict, tokenFactory, false, false)
         chunker.chunk(text).chunkSet().forEach {  chunk ->
             println(text.substring(chunk.start(), chunk.end()))
