@@ -62,6 +62,6 @@ fun getIndexSearcher(indexLocation: String): IndexSearcher {
 }
 
 // Constants referring to Lucene fields
-public const val PID: String = "paragraphid"
-public const val CONTENT = "text"
+const val PID: String = "paragraphid"
+const val CONTENT = "text"
 

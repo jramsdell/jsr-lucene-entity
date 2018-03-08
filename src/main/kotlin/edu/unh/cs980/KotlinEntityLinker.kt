@@ -12,8 +12,7 @@ import org.json.JSONObject
 
 
 /**
- * Function: retrieveEntities
- * Description: Queries spotlight server with string and retrieve list of linked entities.
+ * Desc: Queries spotlight server with string and retrieve list of linked entities.
  * @return List of linked entities (strings). Empty if no entities were linked or if errors were encountered.
  */
 fun retrieveSpotlightEntities(content: String): List<String> {
@@ -32,15 +31,12 @@ fun retrieveSpotlightEntities(content: String): List<String> {
             .toList()
 }
 
+/**
+ * Desc: Queries TagMe and returns a list of entities.
+ */
 fun retrieveTagMeEntities(content: String): List<String> {
     val tok = "7fa2ade3-fce7-4f4a-b994-6f6fefc7e665-843339462"
-//    val url = "https://tagme.d4science.org/tagme/tag?lang=en&gcube-token=$tok"
     val url = "https://tagme.d4science.org/tagme/tag"
-//    val jsoupDoc = Jsoup.connect(url)
-//            .data("gcube-token", tok)
-//            .data("text", content)
-//            .post()
-//    println(jsoupDoc)
     val p = post(url, data = mapOf(
             "gcube-token" to tok,
             "text" to content
@@ -52,12 +48,4 @@ fun retrieveTagMeEntities(content: String): List<String> {
                                                         .replace(" ", "_")}
 
 
-}
-
-
-fun main(args: Array<String>) {
-    val results = retrieveTagMeEntities("This is a test for computer science stuff at the university of new hampshire")
-    println(results)
-    val results2 = retrieveSpotlightEntities("This is a test for computer science stuff at the university of new hampshire")
-    println(results2)
 }
