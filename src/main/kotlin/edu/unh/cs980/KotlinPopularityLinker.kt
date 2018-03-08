@@ -14,7 +14,7 @@ class PopularityLinker(databaseLoc: String, chunkerLoc: String) {
 
     fun saveChunker(out: String, chunker: ExactDictionaryChunker) {
         val outStream = ObjectOutputStream(FileOutputStream(File(out)))
-        outStream.writeObject(chunker as Serializable)
+        outStream.writeObject(chunker)
     }
 
     fun loadChunker(chunkerLoc: String): ExactDictionaryChunker {
@@ -29,7 +29,8 @@ class PopularityLinker(databaseLoc: String, chunkerLoc: String) {
                 .apply { dict.addEntry(DictionaryEntry<String>(this, "")) }
         }
 
-        val tokenFactory = IndoEuropeanTokenizerFactory().run(::EnglishStopTokenizerFactory)
+//        val tokenFactory = IndoEuropeanTokenizerFactory().run(::EnglishStopTokenizerFactory)
+        val tokenFactory = IndoEuropeanTokenizerFactory()
         return ExactDictionaryChunker(dict, tokenFactory, false, false)
     }
 
