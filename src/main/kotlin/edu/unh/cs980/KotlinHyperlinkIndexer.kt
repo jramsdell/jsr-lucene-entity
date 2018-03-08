@@ -15,8 +15,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.mapdb.DBMaker
 import org.mapdb.Serializer
 import org.mapdb.serializer.SerializerArrayTuple
-import java.io.File
-import java.io.StringReader
+import java.io.*
 import java.util.concurrent.atomic.AtomicInteger
 
 
@@ -37,14 +36,12 @@ class HyperlinkIndexer(filename: String) {
         .serializer(Serializer.STRING)
         .createOrOpen()
 
-    val analyzer = StandardAnalyzer()
 
     fun addLink(anchorText: String, entity: String) {
         map.compute(arrayOf(anchorText, entity), { key, value -> value?.inc() ?: 1 })
         mentionSet += anchorText
     }
 
-    val dict = MapDictionary<String>()
 
     fun addLinks(links: List<Pair<String, String>> ) =
             links.forEach { (anchorText, entity) -> addLink(anchorText, entity) }
@@ -92,31 +89,5 @@ class HyperlinkIndexer(filename: String) {
                     .apply(this::addLinks)
             }
     }
-
-    fun addDictionaryEntries() {
-//        mentionSet.forEachParallel { mention ->
-//            val parsed = mention.replace("_", " ")
-//            dict.addEntry(DictionaryEntry<String>(parsed, ""))
-//        }
-        mentionSet.forEach { mention ->
-            mention.replace("_", " ")
-                .apply { dict.addEntry(DictionaryEntry<String>(this, "")) }
-        }
-    }
-
-    fun annotateByPopularity(text: String): List<String> {
-        if (dict.isEmpty()) {
-            addDictionaryEntries()
-        }
-
-        val tokenFactory = IndoEuropeanTokenizerFactory().run(::EnglishStopTokenizerFactory)
-        val chunker = ExactDictionaryChunker(dict, tokenFactory, false, false)
-        chunker.chunk(text).chunkSet().forEach {  chunk ->
-            println(text.substring(chunk.start(), chunk.end()))
-            println(chunk.score())
-        }
-        return emptyList()
-    }
-
 }
 

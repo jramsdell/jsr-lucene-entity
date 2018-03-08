@@ -41,10 +41,12 @@ public class Main {
                 .help("Location of .cbor file for ground truth (should be lead-paragraphs.cbor");
 
         Subparser popularityLinker = subparsers.addParser("popularity_linker")
-                .setDefault("func", new Exec(Main::popularityLinker))
-                .help("Evaluates F1-measure for entity linkers.");
-        popularityLinker.addArgument("--db_name").setDefault("hyperlink.db")
+                .setDefault("func", new Exec(Main::popularityLinker));
+        popularityLinker.addArgument("db")
                 .help("Directory name to create for Lucene index (default: stuff)");
+        popularityLinker.addArgument("chunker")
+                .setDefault("hyperlink_chunker.txt")
+                .help("Location of chunker");
 
 
 //		// Ranklib Trainer
@@ -84,9 +86,11 @@ public class Main {
     }
 
     private static void popularityLinker(Namespace params) {
-        String db = params.getString("db_name");
-        HyperlinkIndexer indexer = new HyperlinkIndexer(db);
-        indexer.annotateByPopularity("Bill Gates was a person who did stuff. Experience the power of linking stuff.");
+        String db = params.getString("db");
+        String chunker = params.getString("chunker");
+        PopularityLinker popularityLinker = new PopularityLinker(db, chunker);
+        popularityLinker
+                .annotateByPopularity("Bill Gates was a person who did stuff. Experience the power of linking stuff.");
     }
 
 
