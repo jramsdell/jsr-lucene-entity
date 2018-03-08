@@ -6,6 +6,7 @@ import com.aliasi.dict.ExactDictionaryChunker
 import com.aliasi.dict.MapDictionary
 import com.aliasi.tokenizer.EnglishStopTokenizerFactory
 import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory
+import com.aliasi.util.AbstractExternalizable
 import java.io.*
 
 class PopularityLinker(databaseLoc: String, chunkerLoc: String) {
@@ -14,7 +15,7 @@ class PopularityLinker(databaseLoc: String, chunkerLoc: String) {
 
     fun saveChunker(out: String, chunker: ExactDictionaryChunker) {
         val outStream = ObjectOutputStream(FileOutputStream(File(out)))
-        outStream.writeObject(chunker)
+        AbstractExternalizable.serializeOrCompile(chunker, outStream)
     }
 
     fun loadChunker(chunkerLoc: String): ExactDictionaryChunker {
