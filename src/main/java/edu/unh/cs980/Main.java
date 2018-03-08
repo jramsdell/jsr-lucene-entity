@@ -44,9 +44,9 @@ public class Main {
                 .setDefault("func", new Exec(Main::popularityLinker));
         popularityLinker.addArgument("db")
                 .help("Directory name to create for Lucene index (default: stuff)");
-        popularityLinker.addArgument("chunker")
-                .setDefault("hyperlink_chunker.txt")
-                .help("Location of chunker");
+        popularityLinker.addArgument("--dict")
+                .setDefault("hyperlink_dict.txt")
+                .help("Location of dictionary");
 
 
 //		// Ranklib Trainer
@@ -87,8 +87,8 @@ public class Main {
 
     private static void popularityLinker(Namespace params) {
         String db = params.getString("db");
-        String chunker = params.getString("chunker");
-        PopularityLinker popularityLinker = new PopularityLinker(db, chunker);
+        String dictLoc = params.getString("dict");
+        PopularityLinker popularityLinker = new PopularityLinker(db, dictLoc);
         popularityLinker
                 .annotateByPopularity("Bill Gates was a person who did stuff. Experience the power of linking stuff.");
     }
