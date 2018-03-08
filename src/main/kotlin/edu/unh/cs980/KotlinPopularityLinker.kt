@@ -14,7 +14,7 @@ class PopularityLinker(databaseLoc: String, chunkerLoc: String) {
 
     fun saveChunker(out: String, chunker: ExactDictionaryChunker) {
         val outStream = ObjectOutputStream(FileOutputStream(File(out)))
-        outStream.writeObject(chunker)
+        outStream.writeObject(chunker as Serializable)
     }
 
     fun loadChunker(chunkerLoc: String): ExactDictionaryChunker {
