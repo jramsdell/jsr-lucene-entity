@@ -94,11 +94,10 @@ class HyperlinkIndexer(filename: String) {
     }
 
     fun addDictionaryEntries() {
-        mentionSet  .pmap { mention ->
-                                mention.replace("_", " ")
-                                    .let { DictionaryEntry<String>(it, "") } }
-                    .toList()
-            .apply { dict.addAll(this)}
+        mentionSet.forEachParallel { mention ->
+            val parsed = mention.replace("_", " ")
+            dict.addEntry(DictionaryEntry<String>(parsed, ""))
+        }
 //        mentionSet.forEach { mention ->
 //            mention.replace("_", " ")
 //                .apply { dict.addEntry(DictionaryEntry<String>(this, "")) }
