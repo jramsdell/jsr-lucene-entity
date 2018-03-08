@@ -47,7 +47,7 @@ class KotlinGroundTruth(filename: String) {
         println("TagMe: $tagMeResult")
         val dbPediaResult = evaluateLinker(::retrieveSpotlightEntities)
         println("DBPedia: $dbPediaResult")
-        val popLinker = PopularityLinker("mydb.db", "hyperlink_dict.txt", 0.2)
+        val popLinker = PopularityLinker("mydb.db", "hyperlink_dict.txt", 0.3)
         val popLinkerResult = evaluateLinker(popLinker::annotateByPopularity)
         println("Popularity Linker: $popLinkerResult")
 
