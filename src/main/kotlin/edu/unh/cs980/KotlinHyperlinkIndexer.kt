@@ -94,14 +94,14 @@ class HyperlinkIndexer(filename: String) {
     }
 
     fun addDictionaryEntries() {
-        mentionSet.forEachParallel { mention ->
-            val parsed = mention.replace("_", " ")
-            dict.addEntry(DictionaryEntry<String>(parsed, ""))
-        }
-//        mentionSet.forEach { mention ->
-//            mention.replace("_", " ")
-//                .apply { dict.addEntry(DictionaryEntry<String>(this, "")) }
+//        mentionSet.forEachParallel { mention ->
+//            val parsed = mention.replace("_", " ")
+//            dict.addEntry(DictionaryEntry<String>(parsed, ""))
 //        }
+        mentionSet.forEach { mention ->
+            mention.replace("_", " ")
+                .apply { dict.addEntry(DictionaryEntry<String>(this, "")) }
+        }
     }
 
     fun annotateByPopularity(text: String): List<String> {
