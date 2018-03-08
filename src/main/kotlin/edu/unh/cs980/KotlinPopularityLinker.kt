@@ -4,8 +4,10 @@ package edu.unh.cs980
 import com.aliasi.dict.DictionaryEntry
 import com.aliasi.dict.ExactDictionaryChunker
 import com.aliasi.dict.MapDictionary
+import com.aliasi.test.unit.tokenizer.TokenLengthTokenizerFactoryTest
 import com.aliasi.tokenizer.EnglishStopTokenizerFactory
 import com.aliasi.tokenizer.IndoEuropeanTokenizerFactory
+import com.aliasi.tokenizer.TokenLengthTokenizerFactory
 import com.aliasi.util.AbstractExternalizable
 import java.io.*
 
@@ -41,7 +43,10 @@ class PopularityLinker(databaseLoc: String, dictLoc: String) {
         val dict =  if (!File(dictLoc).exists()) createDictionary().apply { saveDictionary(dictLoc, this) }
                     else loadDictionary(dictLoc)
 
-        return ExactDictionaryChunker(dict, IndoEuropeanTokenizerFactory.INSTANCE, false, false)
+        val factory = IndoEuropeanTokenizerFactory()
+            .run(::EnglishStopTokenizerFactory)
+            .run { TokenLengthTokenizerFactory(this, 4, 20) }
+        return ExactDictionaryChunker(dict, factory, false, false)
     }
 
     fun annotateByPopularity(text: String): List<String> {
