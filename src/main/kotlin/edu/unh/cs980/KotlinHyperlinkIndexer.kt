@@ -108,7 +108,7 @@ class HyperlinkIndexer(filename: String) {
         val tokenFactory = IndoEuropeanTokenizerFactory()
         val chunker = ExactDictionaryChunker(dict, tokenFactory)
         chunker.chunk(text).chunkSet().forEach {  chunk ->
-            println(chunk)
+            println(text.substring(chunk.start(), chunk.end()))
         }
         return emptyList()
     }
